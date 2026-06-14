@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App - MERN Stack</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-tasks"></i>
+                <span>TodoApp</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <button id="logoutBtn" class="logout-btn" style="display: none;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Auth Forms Container -->
+        <div id="authContainer" class="auth-container">
+            <!-- Login Form -->
+            <div id="loginForm" class="form-card active">
+                <div class="form-header">
+                    <i class="fas fa-lock"></i>
+                    <h2>Login</h2>
+                </div>
+                <form id="loginFormElement">
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="loginEmail" placeholder="Email" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="loginPassword" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                </form>
+                <div class="form-footer">
+                    <p>Don't have an account? <a href="#" id="showRegister">Register</a></p>
+                    <p><a href="#" id="showForgotPassword">Forgot Password?</a></p>
+                </div>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" class="form-card">
+                <div class="form-header">
+                    <i class="fas fa-user-plus"></i>
+                    <h2>Register</h2>
+                </div>
+                <form id="registerFormElement">
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="registerName" placeholder="Full Name" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="registerEmail" placeholder="Email" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="registerPassword" placeholder="Password (min 6 characters)" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i> Register
+                    </button>
+                </form>
+                <div class="form-footer">
+                    <p>Already have an account? <a href="#" id="showLogin">Login</a></p>
+                </div>
+            </div>
+
+            <!-- Forgot Password Form -->
+            <div id="forgotPasswordForm" class="form-card">
+                <div class="form-header">
+                    <i class="fas fa-key"></i>
+                    <h2>Reset Password</h2>
+                </div>
+                <form id="forgotPasswordFormElement">
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="forgotEmail" placeholder="Enter your email" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Send Reset Link
+                    </button>
+                </form>
+                <div class="form-footer">
+                    <p><a href="#" id="backToLogin">Back to Login</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Todo App Container (Hidden until login) -->
+        <div id="todoContainer" class="todo-container" style="display: none;">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <h2>Welcome, <span id="userName">User</span>!</h2>
+                <p>Manage your tasks efficiently</p>
+            </div>
+
+            <!-- Add Todo Form -->
+            <div class="add-todo-card">
+                <h3><i class="fas fa-plus-circle"></i> Add New Task</h3>
+                <form id="addTodoForm">
+                    <input type="text" id="todoTitle" placeholder="Task title..." required>
+                    <textarea id="todoDescription" placeholder="Description (optional)" rows="2"></textarea>
+                    <div class="todo-options">
+                        <select id="todoPriority">
+                            <option value="low">🟢 Low Priority</option>
+                            <option value="medium" selected>🟡 Medium Priority</option>
+                            <option value="high">🔴 High Priority</option>
+                        </select>
+                        <input type="date" id="todoDueDate">
+                    </div>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Add Task
+                    </button>
+                </form>
+            </div>
+
+            <!-- Filter and Stats -->
+            <div class="filter-section">
+                <div class="stats">
+                    <span>Total: <strong id="totalCount">0</strong></span>
+                    <span>Completed: <strong id="completedCount">0</strong></span>
+                    <span>Pending: <strong id="pendingCount">0</strong></span>
+                </div>
+                <div class="filters">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="pending">Pending</button>
+                    <button class="filter-btn" data-filter="completed">Completed</button>
+                </div>
+            </div>
+
+            <!-- Todos List -->
+            <div id="todosList" class="todos-list">
+                <!-- Todos will be dynamically inserted here -->
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i> Loading tasks...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Toast Notification -->
+    <div id="toast" class="toast">
+        <span id="toastMessage"></span>
+    </div>
+
+    <!-- Reset Password Modal (for when user clicks email link) -->
+    <div id="resetPasswordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Reset Password</h3>
+                <span class="close">&times;</span>
+            </div>
+            <form id="resetPasswordForm">
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="newPassword" placeholder="New Password" required>
+                </div>
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Reset Password</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/todos.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
